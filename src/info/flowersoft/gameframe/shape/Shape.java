@@ -109,6 +109,14 @@ public class Shape implements Cloneable {
 		return posY;
 	}
 	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
+	}
+	
 	public void move(float x, float y) {
 		factory.moveObject(obj, x, y);
 		posX += x;
