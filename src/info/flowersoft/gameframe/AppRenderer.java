@@ -48,6 +48,8 @@ public abstract class AppRenderer implements Renderer {
 	
 	private float fps;
 	
+	private List<Touchable> touchables;
+	
 	/**
 	 * Override this constructor to create new instances.
 	 * @param savedInstance
@@ -57,6 +59,7 @@ public abstract class AppRenderer implements Renderer {
 		context = con;
 		world = new World();
 		mapper = new TouchMapper();
+		touchables = new ArrayList<Touchable>();
 	}
 	
 	public void setContext(Context con) {
@@ -156,10 +159,29 @@ public abstract class AppRenderer implements Renderer {
 	}
 	
 	/**
+	 * Registers a touchable object. After that it will automatically receive all touch point events.
+	 * @param t touchable to add
+	 */
+	protected void registerTouchable(Touchable t) {
+		touchables.add(t);
+	}
+	
+	/**
+	 * Removes a touchable object.
+	 * @param t touchable to remove
+	 * @return true if removing was successful
+	 */
+	protected boolean removeTouchable(Touchable t) {
+		return touchables.remove(t);
+	}
+	
+	/**
 	 * Creation method with garantee on existence of a frame buffer. Will be called before first call of
 	 * onResolutionChange. Will only be called one time.
+	 * @param width buffer width in pixels
+	 * @param height buffer height in pixels
 	 */
-	protected abstract void onCreate(int w, int h);
+	protected abstract void onCreate(int width, int height);
 	
 	/**
 	 * Always called when resolution changes (at start onCreate() will be called instead).
@@ -214,6 +236,10 @@ public abstract class AppRenderer implements Renderer {
 			touchpoints = new ArrayList<TouchPoint>(mapper.getActivePoints());
 			newPoint = mapper.getNewPoint();
 			removedPoint = mapper.getRemovedPoint();
+		}
+		
+		for (Touchable t:touchables) {
+			t.update(newPoint, removedPoint);
 		}
 		
 		update(time);
