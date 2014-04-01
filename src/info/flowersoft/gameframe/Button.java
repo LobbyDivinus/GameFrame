@@ -27,12 +27,15 @@ public class Button implements Touchable {
 		updateShape();
 	}
 	
-	public void update(TouchPoint add, TouchPoint remove) {
+	public boolean update(TouchPoint add, TouchPoint remove) {
+		boolean result = false;
+		
 		if (tp == null && add != null) {
 			ScreenRect rect = shape.getAbsoluteScreenRect();
 			
 			if (rect.contains((int) add.getX(), (int) add.getY())) {
 				tp = add;
+				result = true;
 			}
 		}
 		
@@ -41,6 +44,8 @@ public class Button implements Touchable {
 		}
 		
 		updateShape();
+		
+		return result;
 	}
 	
 	public void flush() {
