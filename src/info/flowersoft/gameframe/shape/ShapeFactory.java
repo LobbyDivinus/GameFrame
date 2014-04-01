@@ -530,19 +530,19 @@ public class ShapeFactory {
 	}
 	
 	float xToAbsolute(float x) {
-		return x * (virtW / buffer.getWidth()) + virtX;
+		return (x - virtX) * (buffer.getWidth() / virtW);
 	}
 	
 	float yToAbsolute(float y) {
-		return y * (virtH / buffer.getHeight()) + virtY;
+		return (y - virtY) * (buffer.getHeight() / virtH);
 	}
 	
 	float widthToAbsolute(float w) {
-		return w * (virtW / buffer.getWidth());
+		return w * (buffer.getWidth() / virtW);
 	}
 	
 	float heightToAbsolute(float h) {
-		return h * (virtH / buffer.getHeight());
+		return h * (buffer.getHeight() / virtH);
 	}
 	
 	/**
