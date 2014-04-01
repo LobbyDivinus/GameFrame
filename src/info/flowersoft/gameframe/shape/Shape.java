@@ -182,7 +182,7 @@ public class Shape implements Cloneable {
 	}
 	
 	public void setRotation(float a) {
-		obj.rotateZ(a - angle);
+		obj.rotateZ(-(a - angle));
 		angle = a;
 	}
 	
