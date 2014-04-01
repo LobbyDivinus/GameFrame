@@ -13,6 +13,14 @@ public class TouchFrame implements Touchable {
 		rect = frame;
 	}
 	
+	public boolean isPressed() {
+		return tp != null;
+	}
+	
+	public TouchPoint getTouchPoint() {
+		return tp;
+	}
+	
 	@Override
 	public boolean update(TouchPoint add, TouchPoint remove) {
 		boolean result = false;

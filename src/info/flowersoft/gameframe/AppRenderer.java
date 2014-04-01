@@ -163,7 +163,7 @@ public abstract class AppRenderer implements Renderer {
 	 * @param t touchable to add
 	 */
 	protected void registerTouchable(Touchable t) {
-		touchables.add(t);
+		touchables.add(0, t);
 	}
 	
 	/**
@@ -239,7 +239,9 @@ public abstract class AppRenderer implements Renderer {
 		}
 		
 		for (Touchable t:touchables) {
-			t.update(newPoint, removedPoint);
+			if (t.update(newPoint, removedPoint)) {
+				newPoint = null;
+			}
 		}
 		
 		update(time);
