@@ -1,6 +1,7 @@
 package info.flowersoft.gameframe.shape;
 
 import info.flowersoft.gameframe.description.Brush;
+import info.flowersoft.gameframe.description.ScreenRect;
 
 import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
@@ -231,5 +232,13 @@ public class Shape implements Cloneable {
 		factory.finalizeShape(s);
 		
 		return s;
+	}
+	
+	public ScreenRect getAbsoluteScreenRect() {
+		return new ScreenRect(
+				(int) (factory.xToAbsolute(posX)),
+				(int) (factory.yToAbsolute(posY)),
+				(int) (factory.widthToAbsolute(width)),
+				(int) (factory.heightToAbsolute(height)));
 	}
 }

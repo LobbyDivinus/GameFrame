@@ -529,6 +529,22 @@ public class ShapeFactory {
 		shapeList.remove(s);
 	}
 	
+	float xToAbsolute(float x) {
+		return x * (virtW / buffer.getWidth()) + virtX;
+	}
+	
+	float yToAbsolute(float y) {
+		return y * (virtH / buffer.getHeight()) + virtY;
+	}
+	
+	float widthToAbsolute(float w) {
+		return w * (virtW / buffer.getWidth());
+	}
+	
+	float heightToAbsolute(float h) {
+		return h * (virtH / buffer.getHeight());
+	}
+	
 	/**
 	 * Moves and turns all shapes (in fact only the master of them) in front of the current camera. Call this method
 	 * whenever you move or rotate your cam and want the shapes to behold their position on screen.
