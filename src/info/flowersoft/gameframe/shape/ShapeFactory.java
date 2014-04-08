@@ -478,6 +478,8 @@ public class ShapeFactory {
 		obj.build(false);
 		obj.setLighting(Object3D.LIGHTING_NO_LIGHTS);
 		
+		obj.setCulling(false);
+		
 		s.applyBrush();
 		s.setPivot(0, 0);
 		s.move(x + moveX, y + moveY);

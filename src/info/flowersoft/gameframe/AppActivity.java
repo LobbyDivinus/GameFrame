@@ -16,7 +16,7 @@ public abstract class AppActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		getActionBar().hide();
+		//getActionBar().hide();
 		
 		if (renderer == null) {
 			renderer = getRenderer(savedInstanceState);
