@@ -41,7 +41,6 @@ public abstract class AppActivity extends Activity {
 	@Override
 	protected void onPause() {
 		renderer.onPause();
-		
 		super.onPause();
 		view.onPause();
 	}
