@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.WindowManager;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -26,7 +27,7 @@ public abstract class AppActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		hideActionBar();
+		onCreation();
 		
 		if (renderer == null) {
 			renderer = getRenderer(savedInstanceState);
@@ -53,13 +54,23 @@ public abstract class AppActivity extends Activity {
 		renderer.onResume();
 	}
 	
+	/**
+	 * Call this method in onCreation() to hide the action bar alias title of the activity.
+	 */
 	@SuppressLint("NewApi")
-	private void hideActionBar() {
+	protected void hideActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) {
 			getActionBar().hide();
 		} else {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
+	}
+	
+	/**
+	 * Call this method in onCreation() to hide the status bar so that you app runs in fullscreen mode.
+	 */
+	protected void hideStatusBar() {
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	}
 	
 	/**
@@ -70,4 +81,9 @@ public abstract class AppActivity extends Activity {
 	 */
 	public abstract AppRenderer getRenderer(Bundle savedInstanceState);
 
+	/**
+	 * Override this method to do start up things like hiding the action bar. Nothing will be called by default.
+	 */
+	protected void onCreation() {
+	}
 }
