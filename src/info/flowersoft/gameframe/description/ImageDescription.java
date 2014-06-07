@@ -134,8 +134,8 @@ public class ImageDescription {
 		float facY = 1f / textureObj.getHeight();
 		
 		float[] uv = new float[4];
-		uv[0] = facX * x;
-		uv[1] = facY * y;
+		uv[0] = facX * (x + 1);
+		uv[1] = facY * (y + 1);
 		uv[2] = facX * (x + w);
 		uv[3] = facY * (y + h);
 		
