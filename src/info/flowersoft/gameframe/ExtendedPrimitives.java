@@ -1,5 +1,7 @@
 package info.flowersoft.gameframe;
 
+import com.threed.jpct.GenericVertexController;
+import com.threed.jpct.IVertexController;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.PolygonManager;
 import com.threed.jpct.SimpleVector;
@@ -84,6 +86,8 @@ public class ExtendedPrimitives {
 		// Bottom face
 		obj.addTriangle(v[6], 0f, 0f, v[3], 0f, 1f, v[7], 1f, 0f);
 		obj.addTriangle(v[7], 1f, 0f, v[3], 0f, 1f, v[2], 1f, 1f);
+		
+		calculateFlatNormals(obj);
 		
 		return obj;
 	}
@@ -248,7 +252,7 @@ public class ExtendedPrimitives {
 	 * Creates a sprite of size 1*1.
 	 * 
 	 * A sprite is just a surface of two triangles that will always point towards the camera. Sprites are especially
-	 * used for particle effect. If you don't want the sprite pointing towards the camera you can diable it by using
+	 * used for particle effect. If you don't want the sprite pointing towards the camera you can disable it by using
 	 * the setBillboarding method.
 	 * @return created sprite
 	 */
@@ -260,7 +264,7 @@ public class ExtendedPrimitives {
 	 * Creates a sprite of a specific size.
 	 * 
 	 * A sprite is just a surface of two triangles that will always point towards the camera. Sprites are especially
-	 * used for particle effect. If you don't want the sprite pointing towards the camera you can diable it by using
+	 * used for particle effect. If you don't want the sprite pointing towards the camera you can disable it by using
 	 * the setBillboarding method.
 	 * @param size of the sprite
 	 * @return created sprite
@@ -273,7 +277,7 @@ public class ExtendedPrimitives {
 	 * Creates a sprite of a specific size.
 	 * 
 	 * A sprite is just a surface of two triangles that will always point towards the camera. Sprites are especially
-	 * used for particle effect. If you don't want the sprite pointing towards the camera you can diable it by using
+	 * used for particle effect. If you don't want the sprite pointing towards the camera you can disable it by using
 	 * the setBillboarding method.
 	 * @param width of the sprite
 	 * @param height of the sprite
@@ -400,29 +404,29 @@ public class ExtendedPrimitives {
 	}
 	
 	/**
-	 * Creates a pyramide that would perfectly fit into a 1*1*1 cube. The top points towards the negative Y-Axis.
-	 * @return the created pyramide
+	 * Creates a pyramid that would perfectly fit into a 1*1*1 cube. The top points towards the negative Y-Axis.
+	 * @return the created pyramid
 	 */
-	public static Object3D createPyramide() {
-		return createPyramide(1f);
+	public static Object3D createPyramid() {
+		return createPyramid(1f);
 	}
 	
 	/**
-	 * Creates a pyramide that would perfectly fit into a specific cube. The top points towards the negative Y-Axis.
-	 * @param size of the cube in which the pyramide should perfectly fit in
-	 * @return the created pyramide
+	 * Creates a pyramid that would perfectly fit into a specific cube. The top points towards the negative Y-Axis.
+	 * @param size of the cube in which the pyramid should perfectly fit in
+	 * @return the created pyramid
 	 */
-	public static Object3D createPyramide(float size) {
-		return createPyramide(size, size);
+	public static Object3D createPyramid(float size) {
+		return createPyramid(size, size);
 	}
 	
 	/**
-	 * Creates a pyramide with a specific ground size and height. The top points towards the negative Y-Axis.
-	 * @param size of the ground of the pyramide
-	 * @param height of the pyramide
-	 * @return the created pyramide
+	 * Creates a pyramid with a specific ground size and height. The top points towards the negative Y-Axis.
+	 * @param size of the ground of the pyramid
+	 * @param height of the pyramid
+	 * @return the created pyramid
 	 */
-	public static Object3D createPyramide(float size, float height) {
+	public static Object3D createPyramid(float size, float height) {
 		Object3D obj = new Object3D(6);
 		
 		float halfSize = size / 2;
@@ -903,6 +907,31 @@ public class ExtendedPrimitives {
 					coords[2].y);
 			mgr.setPolygonTexture(i, info);
 		}
+	}
+	
+	private static void calculateFlatNormals(final Object3D obj) {
+		IVertexController c = new GenericVertexController() {
+			@Override
+			public void apply() {
+				SimpleVector[] sv = getSourceMesh();
+				SimpleVector[] dn = getDestinationNormals();
+				System.out.println(sv.length + " ............. " + dn.length);
+				System.out.println(obj.getMesh().getUniqueVertexCount());
+				for (int i = 0; i < sv.length; i += 3) {
+					SimpleVector a = sv[i + 1].calcSub(sv[i]);
+					SimpleVector b = sv[i + 2].calcSub(sv[i]);
+					SimpleVector n = a.calcCross(b).normalize();
+					dn[i] = n;
+					dn[i + 1] = n;
+					dn[i + 2] = n;
+				}
+			}
+		};
+		obj.getMesh().setVertexController(c, true);
+		obj.getMesh().applyVertexController();
+		obj.getMesh().removeVertexController();
+		obj.getMesh().getUniqueVertexCount();
+		obj.build();
 	}
 }
 
