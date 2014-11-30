@@ -1,5 +1,10 @@
 package info.flowersoft.gamestack;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import info.flowersoft.gameframe.touch.TouchMapper;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -113,6 +118,28 @@ public class JPCTGameContext {
 	 */
 	public Bitmap loadBitmap(int resId) {
 		return BitmapFactory.decodeStream(context.getResources().openRawResource(resId));
+	}
+	
+	/**
+	 * Reads in a text file and returns it as a string. Lines are separated with \n.
+	 * @param id Resource id of the text file
+	 * @return String with the content of the text file
+	 */
+	public String loadTextFile(int id) {
+		InputStream stream = context.getResources().openRawResource(id);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		StringBuilder b = new StringBuilder(1024);
+		try {
+			String line = reader.readLine();
+			while (line != null) {
+				b.append(line);
+				b.append('\n');
+				line = reader.readLine();
+			}
+		} catch (IOException e) {
+			b.append("!!! Error while reading string from text file: " + e.toString() + " !!!");
+		}
+		return b.toString();
 	}
 	
 	/**
