@@ -226,10 +226,20 @@ public class Terrain extends Object3D {
 	
 	/**
 	 * Returns height scale (not including influence from model martix).
-	 * @return height
+	 * @return height scale of the terrain
 	 */
 	public float getHeight() {
 		return height;
+	}
+	
+	/**
+	 * Sets a new height scale for the terrain. Remember that internal height values are in [0..1] so using a
+	 * specific height will result in height values in [0..height].
+	 * @param h New height.
+	 */
+	public void setHeight(float h) {
+		height = h;
+		applyHeightData();
 	}
 	
 	/**
@@ -402,14 +412,14 @@ public class Terrain extends Object3D {
 			lX = (int) x + 1;
 			lZ = (int) z + 1;
 			o1X = 0;
-			o1Z = - 1;
-			o2X = - 1;
+			o1Z = -1;
+			o2X = -1;
 			o2Z = 0;
 		}
 		
-		float lH = - height * heightData[lX][depth - lZ - 1];
-		float o1H = - height * heightData[lX + o1X][depth - lZ - o1Z - 1];
-		float o2H = - height * heightData[lX + o2X][depth - lZ - o2Z - 1];
+		float lH = -height * heightData[lX][depth - lZ - 1];
+		float o1H = -height * heightData[lX + o1X][depth - lZ - o1Z - 1];
+		float o2H = -height * heightData[lX + o2X][depth - lZ - o2Z - 1];
 		
 		SimpleVector o1V = SimpleVector.create(size * o1X, o1H - lH, size * o1Z);
 		SimpleVector o2V = SimpleVector.create(size * o2X, o2H - lH, size * o2Z);
@@ -430,7 +440,7 @@ public class Terrain extends Object3D {
 			return 0f;
 		}
 		
-		return this.height * (- this.heightData[x][depth - z - 1]);
+		return this.height * (-this.heightData[x][depth - z - 1]);
 	}
 	
 	/**
@@ -479,8 +489,8 @@ public class Terrain extends Object3D {
 			lX = (int) x + 1;
 			lZ = (int) z + 1;
 			o1X = 0;
-			o1Z = - 1;
-			o2X = - 1;
+			o1Z = -1;
+			o2X = -1;
 			o2Z = 0;
 		}
 		
