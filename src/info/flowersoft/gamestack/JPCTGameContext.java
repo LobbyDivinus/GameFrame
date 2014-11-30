@@ -2,6 +2,8 @@ package info.flowersoft.gamestack;
 
 import info.flowersoft.gameframe.touch.TouchMapper;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.RGBColor;
@@ -102,6 +104,15 @@ public class JPCTGameContext {
 		Texture tex = new Texture(context.getResources().openRawResource(resId), useAlpha);
 		TextureManager.getInstance().addTexture(name, tex);
 		return tex;
+	}
+	
+	/**
+	 * Tries to load a bitmap from the given resource id.
+	 * @param resId Resource id of the bitmap to laod.
+	 * @return The loaded bitmap object.
+	 */
+	public Bitmap loadBitmap(int resId) {
+		return BitmapFactory.decodeStream(context.getResources().openRawResource(resId));
 	}
 	
 	/**
