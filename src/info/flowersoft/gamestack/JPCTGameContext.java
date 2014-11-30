@@ -1,8 +1,10 @@
 package info.flowersoft.gamestack;
 
+import info.flowersoft.gameframe.touch.TouchMapper;
 import android.content.Context;
 
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.RGBColor;
 import com.threed.jpct.Texture;
 import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
@@ -14,11 +16,6 @@ import com.threed.jpct.World;
  */
 public class JPCTGameContext {
 
-	/**
-	 * jPCT world object.
-	 */
-	private World world;
-	
 	/**
 	 * FrameBuffer object for rendering. May be null and can change over time.
 	 */
@@ -50,11 +47,16 @@ public class JPCTGameContext {
 	private float deltaTime;
 	
 	/**
+	 * Touch mapper for touch input handling. Doesn't have to be used.
+	 */
+	private TouchMapper touch;
+	
+	/**
 	 * Constructor to create new JPCTGameContext. See examples for how to use such objects. Feel free to use it for
 	 * other purposes.
 	 */
 	public JPCTGameContext() {
-		world = new World();
+		touch = new TouchMapper();
 	}
 	
 	/**
@@ -71,6 +73,14 @@ public class JPCTGameContext {
 	 */
 	public Context getContext() {
 		return context;
+	}
+	
+	/**
+	 * Returns the touch mapper of this context. Isn't specific for jPCT but useful.
+	 * @return
+	 */
+	public TouchMapper getTouch() {
+		return touch;
 	}
 	
 	/**
@@ -119,21 +129,23 @@ public class JPCTGameContext {
 	}
 	
 	/**
-	 * Render the whole scene. The internal world object will be used for rendering.
+	 * Render the whole scene. The given world object will be used for rendering.
+	 * @param bgColor Color for the background.
+	 * @param world World object to render.
 	 */
-	public void render() {
+	public void render(RGBColor bgColor, World world) {
 		if (fb == null) {
 			throw new IllegalStateException("You have to call onSizeChange in order to be able to render.");
 		}
 		
-		fb.clear();
+		fb.clear(bgColor);
 		world.renderScene(fb);
 		world.draw(fb);
 		fb.display();
 		
 		long ms = System.currentTimeMillis();
 		deltaTime = (ms - lastRender) / 1000.0f;
-		if (deltaTime > 0) {
+		if (deltaTime > 1 || deltaTime < 0) {
 			deltaTime = 0;
 		}
 		lastRender = ms;

@@ -73,13 +73,13 @@ public class GameStack {
 	}
 	
 	public void onPause() {
-		if (!isEmpty()) {
+		if (!isEmpty() && stages.lastElement().isBound()) {
 			stages.lastElement().leave();
 		}
 	}
 	
 	public void onResume() {
-		if (!isEmpty()) {
+		if (!isEmpty() && stages.lastElement().isBound()) {
 			stages.lastElement().enter();
 		}
 	}
