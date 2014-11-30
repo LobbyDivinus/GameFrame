@@ -22,30 +22,73 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.SystemClock;
 
+/**
+ * Extend this class to write a game or something else. Let your AppActivity extending class create a object of your
+ * concrete AppRenderer in it's getRenderer() method.
+ * 
+ * @author Lobby
+ */
 public abstract class AppRenderer implements Renderer {
 
+	/**
+	 * App context from the AppActivity.
+	 */
 	private Context context;
 	
+	/**
+	 * FrameBuffer to render objects. Will be erased with a new one on resize. May be null to indicate that no
+	 * FrameBuffer has been created yet.
+	 */
 	private FrameBuffer buffer;
 	
+	/**
+	 * jPCT World object that is managed by the AppRenderer.
+	 */
 	private World world;
 	
+	/**
+	 * Time when last updated.
+	 */
 	private long lastUpdate;
 	
+	/**
+	 * Wrapper class for touch point handling.
+	 */
 	private TouchMapper mapper;
 	
+	/**
+	 * Current touch points.
+	 */
 	private List<TouchPoint> touchpoints;
 	
+	/**
+	 * Latest added touch point, or null if not available.
+	 */
 	private TouchPoint newPoint;
 	
+	/**
+	 * Latest removed touch point, or null if not available.
+	 */
 	private TouchPoint removedPoint;
 	
+	/**
+	 * Current content's width in pixels.
+	 */
 	private int width;
 	
+	/**
+	 * Current content's height in pixels.
+	 */
 	private int height;
 	
+	/**
+	 * Current aspect ration, calculated by width / height.
+	 */
 	private float ratio;
 	
+	/**
+	 * Current frames per second, also called framerate.
+	 */
 	private float fps;
 	
 	private List<Touchable> touchables;
