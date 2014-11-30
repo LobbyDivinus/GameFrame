@@ -9,8 +9,15 @@ public class TouchFrame implements Touchable {
 	
 	private TouchPoint tp;
 	
+	private Runnable handler;
+	
 	public TouchFrame(ScreenRect frame) {
+		this(frame, null);
+	}
+	
+	public TouchFrame(ScreenRect frame, Runnable handler) {
 		rect = frame;
+		this.handler = handler;
 	}
 	
 	public boolean isPressed() {
@@ -33,6 +40,9 @@ public class TouchFrame implements Touchable {
 		}
 		
 		if (tp != null && tp == remove) {
+			if (handler != null && rect.contains((int) tp.getX(), (int) tp.getY())) {
+				handler.run();
+			}
 			tp = null;
 		}
 		
