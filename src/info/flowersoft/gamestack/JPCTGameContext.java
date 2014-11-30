@@ -77,10 +77,18 @@ public class JPCTGameContext {
 	
 	/**
 	 * Returns the touch mapper of this context. Isn't specific for jPCT but useful.
-	 * @return
+	 * @return Touch mapper object.
 	 */
 	public TouchMapper getTouch() {
 		return touch;
+	}
+	
+	/**
+	 * Returns the internal frame buffer for rendering. May be null and may change over time.
+	 * @return Current frame buffer.
+	 */
+	public FrameBuffer getFrameBuffer() {
+		return fb;
 	}
 	
 	/**
