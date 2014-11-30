@@ -235,10 +235,6 @@ public class Shape implements Cloneable {
 	}
 	
 	public ScreenRect getAbsoluteScreenRect() {
-		return new ScreenRect(
-				(int) (factory.xToAbsolute(posX)),
-				(int) (factory.yToAbsolute(posY)),
-				(int) (factory.widthToAbsolute(width)),
-				(int) (factory.heightToAbsolute(height)));
+		return factory.calculateAbsoluteScreenRect(posX, posY, width, height);
 	}
 }

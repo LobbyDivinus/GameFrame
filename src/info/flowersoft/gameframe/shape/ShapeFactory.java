@@ -3,6 +3,7 @@ package info.flowersoft.gameframe.shape;
 import info.flowersoft.gameframe.description.Brush;
 import info.flowersoft.gameframe.description.FontDescription;
 import info.flowersoft.gameframe.description.ImageDescription;
+import info.flowersoft.gameframe.description.ScreenRect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import com.threed.jpct.World;
  */
 public class ShapeFactory {
 
-	private static final float Z_DISTANCE = 2f;
+	private static final float Z_DISTANCE = 1.0001f;
 	
 	private World world;
 	
@@ -74,8 +75,11 @@ public class ShapeFactory {
 		lineWidth = 1f;
 		virtX = 0;
 		virtY = 0;
-		virtW = buf.getWidth();
-		virtH = buf.getHeight();
+		virtW = 0;
+		virtH = 0;
+		if (buf != null) {
+			setBuffer(buf);
+		}
 	}
 	
 	/**
@@ -498,6 +502,7 @@ public class ShapeFactory {
 		obj.build();
 		obj.setLighting(Object3D.LIGHTING_NO_LIGHTS);
 		
+		s.setOrder(s.getOrder());
 		obj.setCulling(false);
 		
 		s.applyBrush();
@@ -564,8 +569,8 @@ public class ShapeFactory {
 	 * remove a specific shape you have to call it's dispose() method.
 	 */
 	public void clear() {
-		for (Shape s:shapeList) {
-			removeShape(s);
+		while (!shapeList.isEmpty()) {
+			removeShape(shapeList.get(0));
 		}
 	}
 	
@@ -578,5 +583,9 @@ public class ShapeFactory {
 		
 		world.removeObject(master);
 		master = null;
+	}
+	
+	public ScreenRect calculateAbsoluteScreenRect(float x, float y, float w, float h) {
+		return new ScreenRect((int) xToAbsolute(x), (int) yToAbsolute(y), (int) widthToAbsolute(w), (int) heightToAbsolute(h));
 	}
 }
