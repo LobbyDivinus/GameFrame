@@ -21,7 +21,7 @@ import com.threed.jpct.TextureManager;
  * </br>
  * <u>terrain absolute system</u>, here the center of the terrain is 0|0 and intern scaling is considered</br>
  * If not specified you can assume that absolute system is used (such methods are normally prefixed with centered). You
- * will need the last one more often, I think.
+ * will probably need the last one more often.
  * 
  * @author Lobby Divinus
  */
@@ -42,15 +42,24 @@ public class Terrain extends Object3D {
 	 * @author Lobby Divinus
 	 */
 	public interface IBitmapHeightExtractor {
-
+		/**
+		 * At the beginning the extractor will get the bitmap to work on with this method.
+		 * @param bitmap The bitmap to extract heights from.
+		 */
 		void init(Bitmap bitmap);
 		
+		/**
+		 * Extract a height value for the given pixel position.
+		 * @param x X pixel coordinate.
+		 * @param y Y pixel coordinate.
+		 * @return A height value, should be in [0..1].
+		 */
 		float extract(int x, int y);
 		
 	}
 	
 	/**
-	 * Returns heights in 0..1, based on grey values in the bitmap
+	 * Bitmap extractor that returns height values in [0..1], based on grey values in the bitmap.
 	 * 
 	 * @author Lobby Divinus
 	 */
@@ -66,7 +75,7 @@ public class Terrain extends Object3D {
 		@Override
 		public float extract(int x, int y) {
 			int col = bitmap.getPixel(x, y);
-			int grey = (Color.red(col) + Color.green(col) + Color.blue(col)) / 3;
+			float grey = (Color.red(col) + Color.green(col) + Color.blue(col)) / 3f;
 			return grey / 255f;
 		}
 
@@ -83,7 +92,7 @@ public class Terrain extends Object3D {
 	
 	/**
 	 * Creates a terrain from grey values of a bitmap. Pay attention on that the actual number of quads in width and
-	 * depth is 1 smaller than the width and height of the bitmap (if you don't get it, just ignore).
+	 * depth is 1 smaller than the width and height of the bitmap.
 	 * @param bitmap to generate terrain from
 	 */
 	public Terrain(Bitmap bitmap) {
@@ -92,10 +101,10 @@ public class Terrain extends Object3D {
 	
 	/**
 	 * Creates a terrain from grey values of a bitmap. Pay attention on that the actual number of quads in width and
-	 * depth is 1 smaller than the width and height of the bitmap (if you don't get it, just ignore).
+	 * depth is 1 smaller than the width and height of the bitmap.
 	 * @param bitmap to generate terrain from
-	 * @param size quadsize
-	 * @param height factor of height scalation (default is 1)
+	 * @param size size of a single quad
+	 * @param height factor of height scale (default is 1)
 	 */
 	public Terrain(Bitmap bitmap, float size, float height) {
 		super(2 * bitmap.getWidth() * bitmap.getHeight());
@@ -123,7 +132,7 @@ public class Terrain extends Object3D {
 	 * Creates a terrain from values of a bitmap. Pay attention on that the actual number of quads in width and
 	 * depth is 1 smaller than the width and height of the bitmap (if you don't get it, just ignore).
 	 * @param bitmap to generate terrain from
-	 * @param size quadsize
+	 * @param size size of a single quad
 	 * @param height factor of height scale (default is 1)
 	 * @param extractor to get height data from bitmap
 	 */
@@ -152,7 +161,7 @@ public class Terrain extends Object3D {
 	 * @param width number of quads in width
 	 * @param depth number of quads in depth
 	 * @param heights array that contains height value for each vertex, must have size [width + 1][depth + 1]
-	 * @param size quadsize
+	 * @param size size of a single quad
 	 * @param height factor of height scale (default is 1)
 	 */
 	public Terrain(int width, int depth, float[][] heights, float size, float height) {
@@ -216,7 +225,7 @@ public class Terrain extends Object3D {
 	}
 	
 	/**
-	 * Returns height scale.
+	 * Returns height scale (not including influence from model martix).
 	 * @return height
 	 */
 	public float getHeight() {
@@ -225,7 +234,7 @@ public class Terrain extends Object3D {
 	
 	/**
 	 * Returns quad size
-	 * @return quad size
+	 * @return quad size of a single quad
 	 */
 	public float getQuadSize() {
 		return size;
@@ -489,7 +498,10 @@ public class Terrain extends Object3D {
 		SimpleVector[][] v = new SimpleVector[width][depth];
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < depth; z++) {
-				v[x][z] = new SimpleVector(size * (x + 0.5f - width / 2f), - height * heightData[x][depth - z - 1], size * (z + 0.5f - depth / 2f));
+				v[x][z] = new SimpleVector(size * (
+						x + 0.5f - width / 2f),
+						-height * heightData[x][depth - z - 1],
+						size * (z + 0.5f - depth / 2f));
 			}
 		}
 		
@@ -503,7 +515,16 @@ public class Terrain extends Object3D {
 			vC = 1f;
 			for (int z = 0; z + 1 < depth; z++) {
 				addTriangle(v[x][z + 1], uC, vC + vStep, v[x][z], uC, vC, v[x + 1][z], uC + uStep, vC);
-				addTriangle(v[x + 1][z], uC + uStep, vC, v[x + 1][z + 1], uC + uStep, vC + vStep, v[x][z + 1], uC, vC + vStep);
+				addTriangle(
+						v[x + 1][z],
+						uC + uStep,
+						vC,
+						v[x + 1][z + 1],
+						uC + uStep,
+						vC + vStep,
+						v[x][z + 1],
+						uC,
+						vC + vStep);
 				
 				
 				// Use other diagonal for quads (made calculations more complex :/ )
@@ -570,7 +591,7 @@ public class Terrain extends Object3D {
 			SimpleVector v0 = pmgr.getTextureUV(poly, 0);
 			SimpleVector v1 = pmgr.getTextureUV(poly, 1);
 			SimpleVector v2 = pmgr.getTextureUV(poly, 2);
-			info.set(texIds[0], 0, v0.x, v0.y, v1.x, v1.y, v2.x, v2.y,TextureInfo.MODE_REPLACE);
+			info.set(texIds[0], 0, v0.x, v0.y, v1.x, v1.y, v2.x, v2.y, TextureInfo.MODE_REPLACE);
 			for (int i = 0; i < maps.length; i++) {
 				info.set(texIds[i + 1], i + 1,
 						v0.x * xScale[i], v0.y * yScale[i],
@@ -591,7 +612,7 @@ public class Terrain extends Object3D {
 		setShader(terrainShader);
 	}
 	
-	private final static String TERRAIN_VERTEX_SHADER = "uniform mat4 modelViewMatrix;" +
+	private static final String TERRAIN_VERTEX_SHADER = "uniform mat4 modelViewMatrix;" +
 			"uniform mat4 modelViewProjectionMatrix;" +
 			"uniform mat4 textureMatrix;" +
 			"uniform vec4 additionalColor;" +
