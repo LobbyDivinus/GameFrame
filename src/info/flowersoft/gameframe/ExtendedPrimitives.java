@@ -14,8 +14,11 @@ import com.threed.jpct.TextureInfo;
  * @author Lobby Divinus
  * @version 1.0
  */
-public class ExtendedPrimitives {
+public final class ExtendedPrimitives {
 
+	private ExtendedPrimitives() {
+	}
+	
 	/**
 	 * A pivot object is just another name for a dummy object that can be used to position objects by setting
 	 * the pivot as parent. A pivot will never be drawn and so you also shouldn't add it to a World.
@@ -86,8 +89,6 @@ public class ExtendedPrimitives {
 		// Bottom face
 		obj.addTriangle(v[6], 0f, 0f, v[3], 0f, 1f, v[7], 1f, 0f);
 		obj.addTriangle(v[7], 1f, 0f, v[3], 0f, 1f, v[2], 1f, 1f);
-		
-		calculateFlatNormals(obj);
 		
 		return obj;
 	}
@@ -163,7 +164,8 @@ public class ExtendedPrimitives {
 		float uStep = 2f / quads;
 		for (int i = 0; i < quads; i++) {
 			obj.addTriangle(topV[i], u, 0f, bottomV[i], u, 1f, topV[(i + 1) % quads], u + uStep, 0f);
-			obj.addTriangle(topV[(i + 1) % quads], u + uStep, 0f, bottomV[i], u, 1f, bottomV[(i + 1) % quads], u + uStep, 1f);
+			obj.addTriangle(
+					topV[(i + 1) % quads], u + uStep, 0f, bottomV[i], u, 1f, bottomV[(i + 1) % quads], u + uStep, 1f);
 			
 			u += uStep;
 		}
@@ -186,7 +188,7 @@ public class ExtendedPrimitives {
 	 * @param height of the cone along the Y-Axis
 	 * @param faces Number of faces that should be used. Don't use more faces than you need!
 	 * @param cap If false the cone won't have a ground.
-	 * @return
+	 * @return the created cone
 	 */
 	public static Object3D createCone(float radius, float height, int faces, boolean cap) {
 		int triangles = faces;
@@ -368,7 +370,7 @@ public class ExtendedPrimitives {
 		Object3D obj = new Object3D(2 * lengthQuads * pipeQuads);
 		
 		// Prepare vertices
-		SimpleVector v[][] = new SimpleVector[lengthQuads][pipeQuads];
+		SimpleVector[][] v = new SimpleVector[lengthQuads][pipeQuads];
 		for (int i = 0; i < pipeQuads; i++) {
 			double ringAngle = 2 * Math.PI * i / pipeQuads + Math.PI;
 			float ringRadius = (float) (radius + pipeRadius * Math.cos(ringAngle));
@@ -502,7 +504,7 @@ public class ExtendedPrimitives {
 		SimpleVector[][] v = new SimpleVector[quads][yQuads];
 		for (int y = 0; y < yQuads; y++) {
 			float yAngle = (float) (Math.PI * y / (yQuads - 1));
-			float yPos = - 0.5f * size.y * (float) Math.cos(yAngle);
+			float yPos = -0.5f * size.y * (float) Math.cos(yAngle);
 			float yRadius = (float) Math.sin(yAngle);
 			for (int x = 0; x < quads; x++) {
 				float xAngle = (float) (2 * Math.PI * x / quads);
@@ -647,13 +649,13 @@ public class ExtendedPrimitives {
 			float x = holeRadius * (float) Math.cos(angle);
 			float y = holeRadius * (float) Math.sin(angle);
 			
-			topHole[i] = new SimpleVector(x, - halfHeight, y);
+			topHole[i] = new SimpleVector(x, -halfHeight, y);
 			bottomHole[i] = new SimpleVector(x, halfHeight, y);
 			
 			angle += angleStep;
 		}
 		angle = 0.5f * (2 - innerSpace) * angleStep;
-		for (int i = 0; i < count; i+= 2) {
+		for (int i = 0; i < count; i += 2) {
 			float x = innerRadius * (float) Math.cos(angle);
 			float y = innerRadius * (float) Math.sin(angle);
 			topInner[i] = new SimpleVector(x, -halfHeight, y);
@@ -667,7 +669,7 @@ public class ExtendedPrimitives {
 			angle += (2 - innerSpace) * angleStep;
 		}
 		angle = 0.5f * outerSpace * angleStep + outerMovement;
-		for (int i = 0; i < count; i+= 2) {
+		for (int i = 0; i < count; i += 2) {
 			float x = outerRadius * (float) Math.cos(angle);
 			float y = outerRadius * (float) Math.sin(angle);
 			topOuter[i] = new SimpleVector(x, -halfHeight, y);
