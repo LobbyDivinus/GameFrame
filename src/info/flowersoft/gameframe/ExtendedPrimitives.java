@@ -6,6 +6,7 @@ import com.threed.jpct.Object3D;
 import com.threed.jpct.PolygonManager;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.TextureInfo;
+import com.threed.jpct.TextureManager;
 
 /**
  * This class provides some methods to create basic 3d objects that can be used within a jPCT world. All objects have
@@ -51,46 +52,69 @@ public final class ExtendedPrimitives {
 	 * @return the created cuboid
 	 */
 	public static Object3D createBox(SimpleVector size) {
-		Object3D obj = new Object3D(12);
-		
 		size.scalarMul(0.5f);
 		
-		// Prepare some vertices
-		SimpleVector[] v = new SimpleVector[8];
-		v[0] = new SimpleVector(-size.x, -size.y, -size.z);
-		v[1] = new SimpleVector(size.x, -size.y, -size.z);
-		v[2] = new SimpleVector(-size.x, size.y, -size.z);
-		v[3] = new SimpleVector(size.x, size.y, -size.z);
-		v[4] = new SimpleVector(size.x, -size.y, size.z);
-		v[5] = new SimpleVector(-size.x, -size.y, size.z);
-		v[6] = new SimpleVector(size.x, size.y, size.z);
-		v[7] = new SimpleVector(-size.x, size.y, size.z);
+		float[] v = new float[6 * 4 * 3];
+		int c = 0;
 		
 		// Front face
-		obj.addTriangle(v[0], 0f, 0f, v[2], 0f, 1f, v[1], 1f, 0f);
-		obj.addTriangle(v[1], 1f, 0f, v[2], 0f, 1f, v[3], 1f, 1f);
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		
 		// Right face
-		obj.addTriangle(v[1], 0f, 0f, v[3], 0f, 1f, v[4], 1f, 0f);
-		obj.addTriangle(v[4], 1f, 0f, v[3], 0f, 1f, v[6], 1f, 1f);
-		
-		// Left face
-		obj.addTriangle(v[5], 0f, 0f, v[7], 0f, 1f, v[0], 1f, 0f);
-		obj.addTriangle(v[0], 1f, 0f, v[7], 0f, 1f, v[2], 1f, 1f);
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		
 		// Back face
-		obj.addTriangle(v[4], 0f, 0f, v[6], 0f, 1f, v[5], 1f, 0f);
-		obj.addTriangle(v[5], 1f, 0f, v[6], 0f, 1f, v[7], 1f, 1f);
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		
+		// Left face
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
 		
 		// Top face
-		obj.addTriangle(v[5], 0f, 0f, v[0], 0f, 1f, v[4], 1f, 0f);
-		obj.addTriangle(v[4], 1f, 0f, v[0], 0f, 1f, v[1], 1f, 1f);
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		
 		// Bottom face
-		obj.addTriangle(v[6], 0f, 0f, v[3], 0f, 1f, v[7], 1f, 0f);
-		obj.addTriangle(v[7], 1f, 0f, v[3], 0f, 1f, v[2], 1f, 1f);
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
 		
-		return obj;
+		float[] uvs = new float[6 * 4 * 2];
+		int[] indices = new int[6 * 2 * 3];
+		
+		for (int i = 0; i < 6; i++) {
+			uvs[i * 4 * 2 + 0] = 0f;
+			uvs[i * 4 * 2 + 1] = 0f;
+			uvs[i * 4 * 2 + 2] = 1f;
+			uvs[i * 4 * 2 + 3] = 0f;
+			uvs[i * 4 * 2 + 4] = 1f;
+			uvs[i * 4 * 2 + 5] = 1f;
+			uvs[i * 4 * 2 + 6] = 0f;
+			uvs[i * 4 * 2 + 7] = 1f;
+			
+			indices[i * 2 * 3 + 0] = i * 4 + 3;
+			indices[i * 2 * 3 + 1] = i * 4 + 1;
+			indices[i * 2 * 3 + 2] = i * 4 + 0;
+			indices[i * 2 * 3 + 3] = i * 4 + 3;
+			indices[i * 2 * 3 + 4] = i * 4 + 2;
+			indices[i * 2 * 3 + 5] = i * 4 + 1;
+		}
+		
+		return new Object3D(v, uvs, indices, TextureManager.TEXTURE_NOTFOUND);
 	}
 	
 	/**
