@@ -55,43 +55,63 @@ public final class ExtendedPrimitives {
 		size.scalarMul(0.5f);
 		
 		float[] v = new float[6 * 4 * 3];
+		float[] normals = new float[6 * 4 * 3];
 		int c = 0;
+		int d = 0;
 		
 		// Front face
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = 0f; normals[d + 1] = 0f; normals[d + 2] = -1f; d += 3;
+		}
 		
 		// Right face
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = 1f; normals[d + 1] = 0f; normals[d + 2] = 0f; d += 3;
+		}
 		
 		// Back face
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = 0f; normals[d + 1] = 0f; normals[d + 2] = 1f; d += 3;
+		}
 		
 		// Left face
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = -1f; normals[d + 1] = 0f; normals[d + 2] = 0f; d += 3;
+		}
 		
 		// Top face
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = -size.y; v[c + 2] = -size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = 0f; normals[d + 1] = -1f; normals[d + 2] = 0f; d += 3;
+		}
 		
 		// Bottom face
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = -size.z; c += 3;
 		v[c + 0] = size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
 		v[c + 0] = -size.x; v[c + 1] = size.y; v[c + 2] = size.z; c += 3;
+		for (int i = 0; i < 4; i++) {
+			normals[d + 0] = 0f; normals[d + 1] = 1f; normals[d + 2] = 0f; d += 3;
+		}
 		
 		float[] uvs = new float[6 * 4 * 2];
 		int[] indices = new int[6 * 2 * 3];
