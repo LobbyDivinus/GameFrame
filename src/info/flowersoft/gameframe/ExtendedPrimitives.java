@@ -134,7 +134,7 @@ public final class ExtendedPrimitives {
 			indices[i * 2 * 3 + 5] = i * 4 + 1;
 		}
 		
-		return new Object3D(v, uvs, indices, TextureManager.TEXTURE_NOTFOUND);
+		return new Object3D(v, normals, uvs, indices, TextureManager.TEXTURE_NOTFOUND);
 	}
 	
 	/**
@@ -542,48 +542,63 @@ public final class ExtendedPrimitives {
 	 */
 	public static Object3D createEllipsoid(SimpleVector size, int quads, float uScale, float vScale) {
 		int yQuads = Math.max(quads / 2 + 1, 3);
-		Object3D obj = new Object3D(2 * quads * yQuads);
 		
 		// Prepare vertices
-		SimpleVector[][] v = new SimpleVector[quads][yQuads];
+		float[] vertices = new float[(quads + 1) * yQuads * 3];
+		float[] uvs = new float[(quads + 1) * yQuads * 3];
+		float[] normals = new float[(quads + 1) * yQuads * 3];
+		int ctr = 0;
+		float v0 = 0;
+		float vStep = vScale / (yQuads - 1);
 		for (int y = 0; y < yQuads; y++) {
 			float yAngle = (float) (Math.PI * y / (yQuads - 1));
-			float yPos = -0.5f * size.y * (float) Math.cos(yAngle);
+			float ny = -(float) Math.cos(yAngle);
+			float yPos = 0.5f * size.y * ny;
 			float yRadius = (float) Math.sin(yAngle);
-			for (int x = 0; x < quads; x++) {
+			for (int x = 0; x <= quads; x++) {
+				float u0 = uScale * (float) x / quads;
 				float xAngle = (float) (2 * Math.PI * x / quads);
-				float xPos = 0.5f * size.x * (float) Math.cos(xAngle) * yRadius;
-				float zPos = 0.5f * size.z * (float) Math.sin(xAngle) * yRadius;
+				float nx = (float) Math.cos(xAngle) * yRadius;
+				float nz = (float) Math.sin(xAngle) * yRadius;
+				float xPos = 0.5f * size.x * nx;
+				float zPos = 0.5f * size.z * nz;
 				
-				v[x][y] = new SimpleVector(xPos, yPos, zPos);
+				vertices[ctr + 0] = xPos;
+				vertices[ctr + 1] = yPos;
+				vertices[ctr + 2] = zPos;
+				normals[ctr + 0] = nx;
+				normals[ctr + 1] = ny;
+				normals[ctr + 2] = nz;
+				uvs[2 * ctr / 3 + 0] = u0;
+				uvs[2 * ctr / 3 + 1] = v0;
+				ctr += 3;
 			}
+			
+			v0 += vStep;
 		}
 		
 		// Create quads
-		float v0 = 0;
-		float v1 = vScale / (yQuads - 1);
-		float vStep = v1;
+		int[] indices = new int[quads * yQuads * 2 * 3];
+		ctr = 0;
 		for (int y = 0; y + 1 < yQuads; y++) {
 			for (int x = 0; x < quads; x++) {
-				float u0 = uScale * (float) x / quads;
-				float u1 = uScale * (float) (x + 1) / quads;
 				if (y > 0) {
-					obj.addTriangle(v[x][y], u0, v0,
-							v[x][y + 1], u0, v1,
-							v[(x + 1) % quads][y], u1, v0);
+					indices[ctr + 0] = x + y * (quads + 1);
+					indices[ctr + 1] = x + (y + 1) * (quads + 1);
+					indices[ctr + 2] = x + 1 + y * (quads + 1);
+					ctr += 3;
 				}
 				if (y + 2 < yQuads) {
-					obj.addTriangle(v[(x + 1) % quads][y], u1, v0,
-							v[x][y + 1], u0, v1,
-							v[(x + 1) % quads][y + 1], u1, v1);
+					indices[ctr + 0] = x + 1 + y * (quads + 1);
+					indices[ctr + 1] = x + (y + 1) * (quads + 1);
+					indices[ctr + 2] = x + 1 + (y + 1) * (quads + 1);
+					ctr += 3;
 				}
 			}
-			
-			v0 = v1;
-			v1 += vStep;
 		}
 		
-		return obj;
+		return new Object3D(vertices, normals, uvs, indices, TextureManager.TEXTURE_NOTFOUND);
+		//return obj;
 	}
 	
 	/**
