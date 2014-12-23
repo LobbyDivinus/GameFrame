@@ -3,6 +3,7 @@ package info.flowersoft.gameframe;
 import info.flowersoft.gameframe.description.ScreenRect;
 import info.flowersoft.gameframe.shape.ImageShape;
 import info.flowersoft.gameframe.touch.TouchPoint;
+import info.flowersoft.gameframe.touch.TouchUpdate;
 
 public class Button implements Touchable {
 
@@ -27,19 +28,20 @@ public class Button implements Touchable {
 		updateShape();
 	}
 	
-	public boolean update(TouchPoint add, TouchPoint remove) {
+	public boolean update(TouchUpdate tpUpdate) {
 		boolean result = false;
 		
-		if (tp == null && add != null) {
+		if (tp == null && tpUpdate.getAddedTouchPoint() != null) {
 			ScreenRect rect = shape.getAbsoluteScreenRect();
 			
-			if (rect.contains((int) add.getX(), (int) add.getY())) {
-				tp = add;
+			if (rect.contains((int) tpUpdate.getAddedTouchPoint().getX(), (int) tpUpdate.getAddedTouchPoint().getY())) {
+				tp = tpUpdate.getAddedTouchPoint();
+				tpUpdate.clearAddedTouchPoint();
 				result = true;
 			}
 		}
 		
-		if (tp != null && tp == remove) {
+		if (tp != null && tp.equals(tpUpdate.getRemovedTouchPoint())) {
 			tp = null;
 		}
 		

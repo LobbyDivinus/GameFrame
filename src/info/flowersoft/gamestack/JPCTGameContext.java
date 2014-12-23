@@ -175,11 +175,21 @@ public class JPCTGameContext {
 	}
 	
 	/**
-	 * Render the whole scene. The given world object will be used for rendering.
+	 * Renders the whole scene. The given world object will be used for rendering.
 	 * @param bgColor Color for the background.
 	 * @param world World object to render.
 	 */
 	public void render(RGBColor bgColor, World world) {
+		renderWithoutDisplay(bgColor, world);
+		fb.display();
+	}
+	
+	/**
+	 * Renders the whole scene. The given world object will be used for rendering. Won't display the framebuffer.
+	 * @param bgColor Color for the background.
+	 * @param world World object to render.
+	 */
+	public void renderWithoutDisplay(RGBColor bgColor, World world) {
 		if (fb == null) {
 			throw new IllegalStateException("You have to call onSizeChange in order to be able to render.");
 		}
@@ -187,7 +197,7 @@ public class JPCTGameContext {
 		fb.clear(bgColor);
 		world.renderScene(fb);
 		world.draw(fb);
-		fb.display();
+		
 		
 		long ms = System.currentTimeMillis();
 		deltaTime = (ms - lastRender) / 1000.0f;

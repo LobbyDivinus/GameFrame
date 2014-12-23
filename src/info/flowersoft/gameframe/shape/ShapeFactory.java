@@ -194,6 +194,22 @@ public class ShapeFactory {
 		return master;
 	}
 	
+	public double getVirtualX() {
+		return virtX;
+	}
+	
+	public double getVirtualY() {
+		return virtY;
+	}
+	
+	public double getVirtualWidth() {
+		return virtW;
+	}
+	
+	public double getVirtualHeight() {
+		return virtH;
+	}
+	
 	public Shape createUnfilledOval(float x, float y, float width, float height, float quality) {
 		return createUnfilledOval(x, y, width, height, (int) (2 * quality * Math.sqrt(width + height)));
 	}
@@ -536,19 +552,19 @@ public class ShapeFactory {
 		shapeList.remove(s);
 	}
 	
-	float xToAbsolute(float x) {
+	public float convertXToAbsolute(float x) {
 		return (x - virtX) * (buffer.getWidth() / virtW);
 	}
 	
-	float yToAbsolute(float y) {
+	public float convertYToAbsolute(float y) {
 		return (y - virtY) * (buffer.getHeight() / virtH);
 	}
 	
-	float widthToAbsolute(float w) {
+	public float convertWidthToAbsolute(float w) {
 		return w * (buffer.getWidth() / virtW);
 	}
 	
-	float heightToAbsolute(float h) {
+	public float convertHeightToAbsolute(float h) {
 		return h * (buffer.getHeight() / virtH);
 	}
 	
@@ -586,6 +602,6 @@ public class ShapeFactory {
 	}
 	
 	public ScreenRect calculateAbsoluteScreenRect(float x, float y, float w, float h) {
-		return new ScreenRect((int) xToAbsolute(x), (int) yToAbsolute(y), (int) widthToAbsolute(w), (int) heightToAbsolute(h));
+		return new ScreenRect((int) convertXToAbsolute(x), (int) convertYToAbsolute(y), (int) convertWidthToAbsolute(w), (int) convertHeightToAbsolute(h));
 	}
 }

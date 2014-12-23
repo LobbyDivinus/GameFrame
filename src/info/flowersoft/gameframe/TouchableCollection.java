@@ -1,6 +1,7 @@
 package info.flowersoft.gameframe;
 
 import info.flowersoft.gameframe.touch.TouchPoint;
+import info.flowersoft.gameframe.touch.TouchUpdate;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,13 @@ public class TouchableCollection extends ArrayList<Touchable> {
 	
 	public void update(TouchPoint add, TouchPoint remove) {
 		for	(Touchable t:this) {
-			t.update(add, remove);
+			t.update(new TouchUpdate(add, remove));
+		}
+	}
+	
+	public void update(TouchUpdate tpUpdate) {
+		for (Touchable t:this) {
+			t.update(tpUpdate);
 		}
 	}
 	

@@ -48,6 +48,10 @@ public class TouchMapper {
 		}
 	}
 	
+	public TouchUpdate getTouchUpdate() {
+		return new TouchUpdate(getNewPoint(), getRemovedPoint());
+	}
+	
 	public TouchPoint getPrimarayPoint() {
 		for (TouchPoint tp:activePoints) {
 			if (tp.isPrimary()) {

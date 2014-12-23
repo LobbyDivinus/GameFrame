@@ -2,6 +2,7 @@ package info.flowersoft.gameframe;
 
 import info.flowersoft.gameframe.description.ScreenRect;
 import info.flowersoft.gameframe.touch.TouchPoint;
+import info.flowersoft.gameframe.touch.TouchUpdate;
 
 public class TouchFrame implements Touchable {
 
@@ -29,17 +30,18 @@ public class TouchFrame implements Touchable {
 	}
 	
 	@Override
-	public boolean update(TouchPoint add, TouchPoint remove) {
+	public boolean update(TouchUpdate tpUpdate) {
 		boolean result = false;
 		
-		if (tp == null && add != null) {
-			if (rect.contains((int) add.getX(), (int) add.getY())) {
-				tp = add;
+		if (tp == null && tpUpdate.getAddedTouchPoint() != null) {
+			if (rect.contains((int) tpUpdate.getAddedTouchPoint().getX(), (int) tpUpdate.getAddedTouchPoint().getY())) {
+				tp = tpUpdate.getAddedTouchPoint();
+				tpUpdate.clearAddedTouchPoint();
 				result = true;
 			}
 		}
 		
-		if (tp != null && tp == remove) {
+		if (tp != null && tp.equals(tpUpdate.getRemovedTouchPoint())) {
 			if (handler != null && rect.contains((int) tp.getX(), (int) tp.getY())) {
 				handler.run();
 			}
