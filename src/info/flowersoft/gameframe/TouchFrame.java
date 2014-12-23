@@ -30,14 +30,11 @@ public class TouchFrame implements Touchable {
 	}
 	
 	@Override
-	public boolean update(TouchUpdate tpUpdate) {
-		boolean result = false;
-		
+	public void update(TouchUpdate tpUpdate) {
 		if (tp == null && tpUpdate.getAddedTouchPoint() != null) {
 			if (rect.contains((int) tpUpdate.getAddedTouchPoint().getX(), (int) tpUpdate.getAddedTouchPoint().getY())) {
 				tp = tpUpdate.getAddedTouchPoint();
 				tpUpdate.clearAddedTouchPoint();
-				result = true;
 			}
 		}
 		
@@ -47,8 +44,6 @@ public class TouchFrame implements Touchable {
 			}
 			tp = null;
 		}
-		
-		return result;
 	}
 
 	@Override

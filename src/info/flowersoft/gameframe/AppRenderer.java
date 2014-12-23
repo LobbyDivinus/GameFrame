@@ -281,9 +281,9 @@ public abstract class AppRenderer implements Renderer {
 		}
 		
 		for (Touchable t:touchables) {
-			if (t.update(tpUpdate)) {
+			t.update(tpUpdate);
 				//newPoint = null; // Old stuff, not used anymore
-			}
+			//}
 		}
 		
 		update(time);
