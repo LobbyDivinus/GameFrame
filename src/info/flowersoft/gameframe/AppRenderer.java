@@ -3,6 +3,7 @@ package info.flowersoft.gameframe;
 
 import info.flowersoft.gameframe.touch.TouchMapper;
 import info.flowersoft.gameframe.touch.TouchPoint;
+import info.flowersoft.gameframe.touch.TouchUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +63,9 @@ public abstract class AppRenderer implements Renderer {
 	private List<TouchPoint> touchpoints;
 	
 	/**
-	 * Latest added touch point, or null if not available.
+	 * Latest TouchUpdate, or null if not available.
 	 */
-	private TouchPoint newPoint;
-	
-	/**
-	 * Latest removed touch point, or null if not available.
-	 */
-	private TouchPoint removedPoint;
+	private TouchUpdate tpUpdate;
 	
 	/**
 	 * Current content's width in pixels.
@@ -130,11 +126,15 @@ public abstract class AppRenderer implements Renderer {
 	}
 	
 	protected TouchPoint getNewTouchPoint() {
-		return newPoint;
+		return tpUpdate.getAddedTouchPoint();
 	}
 	
 	protected TouchPoint getRemovedTouchPoint() {
-		return removedPoint;
+		return tpUpdate.getRemovedTouchPoint();
+	}
+	
+	protected TouchUpdate getTouchUpdate() {
+		return tpUpdate;
 	}
 	
 	/**
@@ -277,13 +277,12 @@ public abstract class AppRenderer implements Renderer {
 		
 		synchronized (mapper) {
 			touchpoints = new ArrayList<TouchPoint>(mapper.getActivePoints());
-			newPoint = mapper.getNewPoint();
-			removedPoint = mapper.getRemovedPoint();
+			tpUpdate = mapper.getTouchUpdate();
 		}
 		
 		for (Touchable t:touchables) {
-			if (t.update(newPoint, removedPoint)) {
-				newPoint = null;
+			if (t.update(tpUpdate)) {
+				//newPoint = null; // Old stuff, not used anymore
 			}
 		}
 		
