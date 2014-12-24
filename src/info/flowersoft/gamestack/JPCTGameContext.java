@@ -106,8 +106,14 @@ public class JPCTGameContext {
 	 * @return Texture object for the loaded texture.
 	 */
 	public Texture loadTexture(int resId, String name, boolean useAlpha) {
-		Texture tex = new Texture(context.getResources().openRawResource(resId), useAlpha);
-		TextureManager.getInstance().addTexture(name, tex);
+		TextureManager mgr = TextureManager.getInstance();
+		Texture tex;
+		if (mgr.containsTexture(name)) {
+			tex = mgr.getTexture(name);
+		} else {
+			tex = new Texture(context.getResources().openRawResource(resId), useAlpha);
+			mgr.addTexture(name, tex);
+		}
 		return tex;
 	}
 	
