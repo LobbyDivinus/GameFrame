@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.GLSLShader;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.Texture;
 import com.threed.jpct.TextureManager;
@@ -146,6 +147,16 @@ public class JPCTGameContext {
 			b.append("!!! Error while reading string from text file: " + e.toString() + " !!!");
 		}
 		return b.toString();
+	}
+	
+	/**
+	 * Loads a shader from the given vertex shader and fragment shader source specified by their file ids.
+	 * @param vertexShaderId Resource id of the vertex shader source.
+	 * @param fragmentShaderId Resource id of the fragment shader source.
+	 * @return The loaded shader of null if the shader could not be loaded.
+	 */
+	public GLSLShader loadShader(int vertexShaderId, int fragmentShaderId) {
+		return new GLSLShader(loadTextFile(vertexShaderId), loadTextFile(fragmentShaderId));
 	}
 	
 	/**
