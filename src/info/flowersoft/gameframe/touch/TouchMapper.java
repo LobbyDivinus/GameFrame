@@ -19,6 +19,7 @@ public class TouchMapper {
 	private List<TouchPoint> activePoints;
 	private List<TouchPoint> newPoints;
 	private List<TouchPoint> removedPoints;
+	private boolean beforeMap;
 	
 	/**
 	 * Construct a new touch mapper.
@@ -80,12 +81,15 @@ public class TouchMapper {
 	 * @return The current touch update to handle for this frame.
 	 */
 	public TouchUpdate getTouchUpdate() {
+		if (beforeMap) {
+			beforeMap();
+			beforeMap = false;
+		}
+		
 		TouchPoint add = getNewPoint();
 		TouchPoint rem = getRemovedPoint();
 		
-		for (TouchPoint tp:activePoints) {
-			tp.setLastPosition(tp.getX(), tp.getY());
-		}
+		beforeMap = true;
 		
 		return new TouchUpdate(add, rem);
 	}
@@ -114,11 +118,26 @@ public class TouchMapper {
 		removedPoints.clear();
 	}
 	
+	private void beforeMap() {
+		for (TouchPoint tp:activePoints) {
+			tp.setLastPosition(tp.getX(), tp.getY());
+		}
+	}
+	
 	/**
 	 * Call this method on every MotionEvent your app receives.
 	 * @param e MotionEvent to handle.
 	 */
 	public void map(MotionEvent e) {
+		if (beforeMap) {
+			beforeMap();
+			beforeMap = false;
+		}
+		
+		if (e == null) {
+			return;
+		}
+		
 		for (int i = 0; i < e.getPointerCount(); i++) {
 			TouchPoint tp = getPoint(e.getPointerId(i));
 			if (tp == null) {
