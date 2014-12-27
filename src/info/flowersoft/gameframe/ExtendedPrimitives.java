@@ -350,6 +350,15 @@ public final class ExtendedPrimitives {
 	
 	/**
 	 * Creates a plane. A plane is a flat rectangle consisting of quads (smaller rectangles). By default each quad has
+	 * a size of 1. Here the plane has just one quad.
+	 * @return the created plane
+	 */
+	public static Object3D createPlane() {
+		return createPlane(1f, 1);
+	}
+	
+	/**
+	 * Creates a plane. A plane is a flat rectangle consisting of quads (smaller rectangles). By default each quad has
 	 * a size of 1.
 	 * @param quads Number of quads at each edge.
 	 * @return the created plane
