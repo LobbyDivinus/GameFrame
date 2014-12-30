@@ -37,7 +37,7 @@ public class TouchButton {
 				img = null;
 			}
 			
-			if (tex != "") {
+			if (!tex.equals("")) {
 				sourceX = x;
 				sourceY = y;
 				sourceW = w;
