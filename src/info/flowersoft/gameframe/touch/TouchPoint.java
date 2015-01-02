@@ -7,7 +7,7 @@ import android.os.SystemClock;
  * 
  * @author Lobby Divinus
  */
-public class TouchPoint {
+public class TouchPoint implements Cloneable {
 
 	private int id;
 	private boolean primary;
@@ -18,6 +18,10 @@ public class TouchPoint {
 	private float lastX;
 	private float lastY;
 	private long timestamp;
+	private TouchPoint ghost;
+	
+	private TouchPoint() {
+	}
 	
 	/**
 	 * Constructor to construct a new TouchPoint object.
@@ -130,4 +134,67 @@ public class TouchPoint {
 		return timestamp;
 	}
 	
+	/**
+	 * Fills the TouchPoint with the values of the given TouchPoint tp so that will be equal.
+	 * @param tp The TouchPoint to get values from.
+	 */
+	void fillWith(TouchPoint tp) {
+		id = tp.id;
+		primary = tp.primary;
+		firstX = tp.firstX;
+		firstY = tp.firstY;
+		x = tp.x;
+		y = tp.y;
+		lastX = tp.lastX;
+		lastY = tp.lastY;
+		timestamp = tp.timestamp;
+	}
+	
+	@Override
+	public TouchPoint clone() {
+		TouchPoint tp = new TouchPoint();
+		
+		tp.fillWith(this);
+		
+		return tp;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		boolean result = false;
+		
+		if (other instanceof TouchPoint) {
+			TouchPoint tp = (TouchPoint) other;
+			result = tp.getID() == id && tp.getTimestamp() == timestamp;
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		
+		result += "TouchPoint " + id + " at ";
+		result += "(" + x + ", " + y + ") ";
+		result += "which is " + (primary ? "primary" : "not primary");
+		
+		return result;
+	}
+	
+	/**
+	 * Sets a ghost TouchPoint g.
+	 * @param g The ghost TouchPoint.
+	 */
+	void setGhost(TouchPoint g) {
+		ghost = g;
+	}
+	
+	/**
+	 * Returns the ghost TouchPoint.
+	 * @return Ghost TouchPoint or Null if no one has been set.
+	 */
+	TouchPoint getGhost() {
+		return ghost;
+	}
 }
