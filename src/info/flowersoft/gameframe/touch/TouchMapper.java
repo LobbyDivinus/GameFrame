@@ -19,7 +19,9 @@ public class TouchMapper {
 	private List<TouchPoint> activePoints;
 	private List<TouchPoint> newPoints;
 	private List<TouchPoint> removedPoints;
-	private boolean beforeMap;
+	private List<TouchPoint> publicActivePoints;
+	private TouchPoint newPoint;
+	private TouchPoint removedPoint;
 	
 	/**
 	 * Construct a new touch mapper.
@@ -37,6 +39,7 @@ public class TouchMapper {
 		activePoints = new LinkedList<TouchPoint>();
 		newPoints = new LinkedList<TouchPoint>();
 		removedPoints = new LinkedList<TouchPoint>();
+		publicActivePoints = new LinkedList<TouchPoint>();
 		
 		this.useNewList = useNewList;
 		this.useRemovedList = useRemovedList;
@@ -80,18 +83,19 @@ public class TouchMapper {
 	 * Call this method every frame to get a touch update.
 	 * @return The current touch update to handle for this frame.
 	 */
-	public TouchUpdate getTouchUpdate() {
-		if (beforeMap) {
-			beforeMap();
-			beforeMap = false;
+	public synchronized TouchUpdate getTouchUpdate() {
+		newPoint = newPoints.isEmpty() ? null : newPoints.remove(0).getGhost();
+		removedPoint = removedPoints.isEmpty() ? null : removedPoints.remove(0).getGhost();
+		
+		publicActivePoints.clear();
+		for (TouchPoint tp : activePoints) {
+			TouchPoint ghost = tp.getGhost();
+			ghost.fillWith(tp);
+			tp.setLastPosition(tp.getX(), tp.getY());
+			publicActivePoints.add(ghost);
 		}
 		
-		TouchPoint add = getNewPoint();
-		TouchPoint rem = getRemovedPoint();
-		
-		beforeMap = true;
-		
-		return new TouchUpdate(add, rem);
+		return new TouchUpdate(newPoint, removedPoint);
 	}
 	
 	/**
@@ -99,8 +103,8 @@ public class TouchMapper {
 	 * without active touch points.
 	 * @return The primary touch point or null if none exists.
 	 */
-	public TouchPoint getPrimarayPoint() {
-		for (TouchPoint tp:activePoints) {
+	public synchronized TouchPoint getPrimarayPoint() {
+		for (TouchPoint tp:publicActivePoints) {
 			if (tp.isPrimary()) {
 				return tp;
 			}
@@ -112,27 +116,17 @@ public class TouchMapper {
 	/**
 	 * Flushes all handled touch points.
 	 */
-	public void flush() {
+	public synchronized void flush() {
 		activePoints.clear();
 		newPoints.clear();
 		removedPoints.clear();
-	}
-	
-	private void beforeMap() {
-		for (TouchPoint tp:activePoints) {
-			tp.setLastPosition(tp.getX(), tp.getY());
-		}
 	}
 	
 	/**
 	 * Call this method on every MotionEvent your app receives.
 	 * @param e MotionEvent to handle.
 	 */
-	public void map(MotionEvent e) {
-		if (beforeMap) {
-			beforeMap();
-			beforeMap = false;
-		}
+	public synchronized void map(MotionEvent e) {
 		
 		if (e == null) {
 			return;
@@ -151,8 +145,8 @@ public class TouchMapper {
 			} else {
 				fillTouchPoint(tp, e, i);
 				
-				if (i == e.getActionIndex() &&
-						(e.getActionMasked() == MotionEvent.ACTION_UP
+				if (i == e.getActionIndex()
+						&& (e.getActionMasked() == MotionEvent.ACTION_UP
 						|| e.getActionMasked() == MotionEvent.ACTION_POINTER_UP)) {
 					removeTouchPoint(tp);
 				}
@@ -178,7 +172,7 @@ public class TouchMapper {
 	 * @param id Id of a touch point.
 	 * @return The touchpoint with the fiven id, or null, if no such touch point has been found.
 	 */
-	public TouchPoint getPoint(int id) {
+	public synchronized TouchPoint getPoint(int id) {
 		for (TouchPoint tp:activePoints) {
 			if (tp.getID() == id) {
 				return tp;
@@ -189,8 +183,9 @@ public class TouchMapper {
 	}
 	
 	
-	private TouchPoint addTouchPoint(int id, MotionEvent e, int idx, boolean primary) {
+	private  TouchPoint addTouchPoint(int id, MotionEvent e, int idx, boolean primary) {
 		TouchPoint tp = new TouchPoint(id, primary, e.getX(idx), e.getY(idx));
+		tp.setGhost(tp.clone());
 		
 		if (useNewList) {
 			newPoints.add(tp);
@@ -210,5 +205,6 @@ public class TouchMapper {
 		if (useRemovedList) {
 			removedPoints.add(tp);
 		}
+		tp.getGhost().fillWith(tp);
 	}
 }
