@@ -25,6 +25,11 @@ import com.threed.jpct.World;
 public class JPCTGameContext {
 
 	/**
+	 * Min deltaTime that will be allowed.
+	 */
+	public static final float MIN_DELTA_TIME = 0.01f;
+	
+	/**
 	 * FrameBuffer object for rendering. May be null and can change over time.
 	 */
 	private FrameBuffer fb;
@@ -65,6 +70,8 @@ public class JPCTGameContext {
 	 */
 	public JPCTGameContext() {
 		touch = new TouchMapper();
+		
+		deltaTime = MIN_DELTA_TIME;
 	}
 	
 	/**
@@ -218,8 +225,8 @@ public class JPCTGameContext {
 		
 		long ms = System.currentTimeMillis();
 		deltaTime = (ms - lastRender) / 1000.0f;
-		if (deltaTime > 1 || deltaTime < 0) {
-			deltaTime = 0.01f;
+		if (deltaTime > 1 || deltaTime < MIN_DELTA_TIME) {
+			deltaTime = MIN_DELTA_TIME;
 		}
 		lastRender = ms;
 	}
