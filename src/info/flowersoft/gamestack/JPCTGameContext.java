@@ -219,7 +219,7 @@ public class JPCTGameContext {
 		long ms = System.currentTimeMillis();
 		deltaTime = (ms - lastRender) / 1000.0f;
 		if (deltaTime > 1 || deltaTime < 0) {
-			deltaTime = 0;
+			deltaTime = 0.01f;
 		}
 		lastRender = ms;
 	}
