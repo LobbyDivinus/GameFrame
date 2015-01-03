@@ -59,11 +59,7 @@ public class TouchMapper {
 	 */
 	@Deprecated
 	public TouchPoint getNewPoint() {
-		if (newPoints.size() > 0) {
-			return newPoints.remove(0);
-		} else {
-			return null;
-		}
+		return removedPoint;
 	}
 	
 	/**
@@ -72,11 +68,7 @@ public class TouchMapper {
 	 */
 	@Deprecated
 	public TouchPoint getRemovedPoint() {
-		if (removedPoints.size() > 0) {
-			return removedPoints.remove(0);
-		} else {
-			return null;
-		}
+		return newPoint;
 	}
 	
 	/**
