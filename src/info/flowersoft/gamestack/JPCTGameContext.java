@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import info.flowersoft.gameframe.key.KeyMapper;
 import info.flowersoft.gameframe.touch.TouchMapper;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -65,11 +66,17 @@ public class JPCTGameContext {
 	private TouchMapper touch;
 	
 	/**
+	 * Key mapper for key input handing. You don't have to use it.
+	 */
+	private KeyMapper key;
+	
+	/**
 	 * Constructor to create new JPCTGameContext. See examples for how to use such objects. Feel free to use it for
 	 * other purposes.
 	 */
 	public JPCTGameContext() {
 		touch = new TouchMapper();
+		key = new KeyMapper();
 		
 		deltaTime = MIN_DELTA_TIME;
 	}
@@ -96,6 +103,14 @@ public class JPCTGameContext {
 	 */
 	public TouchMapper getTouch() {
 		return touch;
+	}
+	
+	/**
+	 * Returns the key mapper of this context. Isn't specific for jPCT but useful.
+	 * @return Key mapper object.
+	 */
+	public KeyMapper getKey() {
+		return key;
 	}
 	
 	/**
