@@ -72,10 +72,9 @@ public class TouchMapper {
 	}
 	
 	/**
-	 * Call this method every frame to get a touch update.
-	 * @return The current touch update to handle for this frame.
+	 * Call this method every frame to notify it that a new frame starts.
 	 */
-	public synchronized TouchUpdate getTouchUpdate() {
+	public synchronized void update() {
 		newPoint = newPoints.isEmpty() ? null : newPoints.remove(0).getGhost();
 		removedPoint = removedPoints.isEmpty() ? null : removedPoints.remove(0).getGhost();
 		
@@ -86,7 +85,13 @@ public class TouchMapper {
 			tp.setLastPosition(tp.getX(), tp.getY());
 			publicActivePoints.add(ghost);
 		}
-		
+	}
+	
+	/**
+	 * Gets the current TouchUpdate.
+	 * @return The current touch update to handle for this frame.
+	 */
+	public synchronized TouchUpdate getTouchUpdate() {
 		return new TouchUpdate(newPoint, removedPoint);
 	}
 	
