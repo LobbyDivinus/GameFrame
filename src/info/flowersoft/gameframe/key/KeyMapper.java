@@ -58,12 +58,16 @@ public class KeyMapper {
 		
 		switch (event.getAction()) {
 		case KeyEvent.ACTION_DOWN:
-			keyDown[code] = true;
-			keyHit.add(code);
+			if (!keyDown[code]) {
+				keyDown[code] = true;
+				keyHit.add(code);
+			}
 			break;
 		case KeyEvent.ACTION_UP:
-			keyDown[code] = false;
-			keyRelease.add(code);
+			if (keyDown[code]) {
+				keyDown[code] = false;
+				keyRelease.add(code);
+			}
 			break;
 		default:
 			

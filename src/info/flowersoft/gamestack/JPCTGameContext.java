@@ -182,6 +182,15 @@ public class JPCTGameContext {
 	}
 	
 	/**
+	 * Opens a input stream for the given resource.
+	 * @param resID ID of the resource to read.
+	 * @return InputStream of the resource.
+	 */
+	public InputStream openStream(int resID) {
+		return context.getResources().openRawResource(resID);
+	}
+	
+	/**
 	 * Current display width. Zero if onSizeChanged has never been called before.
 	 * @return Display width in pixels.
 	 */
@@ -215,6 +224,7 @@ public class JPCTGameContext {
 	
 	/**
 	 * Renders the whole scene. The given world object will be used for rendering.
+	 * Notifies the context that a new frame starts.
 	 * @param bgColor Color for the background.
 	 * @param world World object to render.
 	 */
@@ -225,6 +235,7 @@ public class JPCTGameContext {
 	
 	/**
 	 * Renders the whole scene. The given world object will be used for rendering. Won't display the framebuffer.
+	 * Notifies the context that a new frame starts.
 	 * @param bgColor Color for the background.
 	 * @param world World object to render.
 	 */
@@ -237,7 +248,13 @@ public class JPCTGameContext {
 		world.renderScene(fb);
 		world.draw(fb);
 		
-		
+		nextFrame();
+	}
+	
+	/**
+	 * Notifies the context that a new frame starts now. Call this in order to get correct delta time values.
+	 */
+	public void nextFrame() {
 		long ms = System.currentTimeMillis();
 		deltaTime = (ms - lastRender) / 1000.0f;
 		if (deltaTime > 1 || deltaTime < MIN_DELTA_TIME) {
